@@ -1,0 +1,41 @@
+{
+  "SimulinkCodeImporterVersion": 1,
+  "LibraryFileName": "Sensor_Fusion_ZP",
+  "OutputFolder": "C:\\Users\\mahus\\Desktop\\WARG_NEW\\ZP3-Simulator\\Output Blocks (ZP3 Code)",
+  "CustomCode": {
+    "SourceFiles": [
+      ".\\..\\sensor_fusion\\Src\\manhony_ahrs.cpp",
+      ".\\..\\sensor_fusion\\Src\\sensor_fusion.cpp"
+    ],
+    "InterfaceHeaders": [
+      "ccontrol_functions.h",
+      "common_data_types.hpp",
+      "manhony_ahrs.h",
+      "math_constants.hpp",
+      "sensor_fusion.hpp",
+      "sf_config.h"
+    ],
+    "IncludePaths": ".\\..\\sensor_fusion\\Inc",
+    "Language": "C++",
+    "GlobalVariableInterface": true,
+    "FunctionArrayLayout": "NotSpecified"
+  },
+  "Options": {
+    "LibraryBrowserName": "Sensor_Fusion_ZP"
+  },
+  "FunctionsToImport": [
+    "SF_GenerateNewResult",
+    "SF_GetResult",
+    "SF_Init"
+  ],
+  "TypesToImport": [
+    "Airspeed_Data_t",
+    "Altimeter_Data_t",
+    "Gps_Data_t",
+    "IMU_Data_t",
+    "SFError_t",
+    "SFIterationData_t",
+    "SFOutput_t",
+    "SensorErrorCodes_e"
+  ]
+}
