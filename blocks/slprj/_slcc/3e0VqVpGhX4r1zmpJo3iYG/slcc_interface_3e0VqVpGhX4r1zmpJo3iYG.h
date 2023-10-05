@@ -13,10 +13,10 @@ extern "C" {
 /* Variable Definitions */
 
 /* Function Declarations */
-DLL_EXPORT_CC extern void get_twoKi_addr_3e0VqVpGhX4r1zmpJo3iYG(volatile real32_T **varAddr);
-DLL_EXPORT_CC extern void get_q0_addr_3e0VqVpGhX4r1zmpJo3iYG(volatile real32_T **varAddr);
 DLL_EXPORT_CC extern void get_q2_addr_3e0VqVpGhX4r1zmpJo3iYG(volatile real32_T **varAddr);
 DLL_EXPORT_CC extern void get_twoKp_addr_3e0VqVpGhX4r1zmpJo3iYG(volatile real32_T **varAddr);
+DLL_EXPORT_CC extern void get_twoKi_addr_3e0VqVpGhX4r1zmpJo3iYG(volatile real32_T **varAddr);
+DLL_EXPORT_CC extern void get_q0_addr_3e0VqVpGhX4r1zmpJo3iYG(volatile real32_T **varAddr);
 DLL_EXPORT_CC extern void get_q1_addr_3e0VqVpGhX4r1zmpJo3iYG(volatile real32_T **varAddr);
 DLL_EXPORT_CC extern void get_q3_addr_3e0VqVpGhX4r1zmpJo3iYG(volatile real32_T **varAddr);
 DLL_EXPORT_CC extern void get_SF_FREQ_addr_3e0VqVpGhX4r1zmpJo3iYG(const int32_T **varAddr);
