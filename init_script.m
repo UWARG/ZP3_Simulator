@@ -206,11 +206,11 @@ function [alss,thrustss,dess] = getTrim(Vt,mass,cg,cgRef, c, rho,phi,maxThrust)
     da = []; M =[]; dz = [];
 
     options = optimset('TolX',1e-6);
-    [alss,dz] = fminbnd(@findAOA,deg2rad(-1),deg2rad(14),options);
+    [alss,dz] = fminbnd(@findAlpha,deg2rad(-1),deg2rad(14),options);
 
     da = [];
     
-    function dz = findAOA(al) 
+    function dz = findAlpha(al) 
         theta   = al;
 
         [thrustss,da]  = fminbnd(@findThrust, 0, maxThrust, options);
