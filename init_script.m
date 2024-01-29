@@ -1,8 +1,5 @@
 clear; close all;
 addpath("blocks\");
-addpath("data\");
-% load('aero_data_raw_c172.mat');
-load('ae_data_CorrectedMz.mat');
 
 %% Sim paraters
 dt = 1/50;
@@ -22,15 +19,14 @@ simulation_time = 20;
 % inertia    = [1395 1480 2563 123];    %Inertia components Ixx,Iyy,Izz,Ixz % https://www.researchgate.net/figure/Mass-geometry-parameters-and-performance-specifications-for-Cessna-172_fig10_309468360
 
 %L159
-m = 6000;     %L159T2 wet wing - 6721kg full
-cg = 0.23;
-cg_ref = 0.245;
+m = 6000;     %L159T2 wet wing
+cg = 0.25;
+cg_ref = 0.26;
 
-b = 9.17;
-c = 2.15;
-s = 18.8;
-inertia    = [15713.8 37742.6 50706.9 2779.27];
-
+b = 9;
+c = 2;
+s = 20;
+inertia    = [14000 40000 55000 3000];
 
 inertia = [ inertia(1), 0, -inertia(4); 
             0, inertia(2), 0; 
@@ -65,24 +61,26 @@ vector_control_enable = 1; % Enable control with scheduled vectors
 automatic_control_enable = 0; % Enable automatic control system (PM,AM)
 
 % Manual control
-cVect  = [0 1 1+dt 8 8+dt simulation_time];        % scheduling vector
+cVect  = [0 1 1+dt 8 8+dt simulation_time]; % scheduling vector
 daVect = [0 0 0 0 0 0];
 deVect = [0 0 -0.02 -0.02 0 0]+dess;
 drVect = [0 0 0 0 0 0];
 ThVect = [0 0 0 0 0 0];
 
-save("sim_config.mat"); % same configuration parameters
+save("sim_config.mat"); % save configuration parameters for repeated tests
 
-state_bus = createBus();
+state_bus = createBus(); % Create state variable bus object
 
 model_name = 'simulator_v1'; %"simulator_v1_noRef";
 simIn = Simulink.SimulationInput(model_name);
-simIn = loadVariablesFromMATFile(simIn,"sim_config.mat");
-options = simset('SrcWorkspace','base');
+simIn = loadVariablesFromMATFile(simIn,"sim_config.mat"); % load workspace variables into simulink
+options = simset('SrcWorkspace','base'); % Evaluate functions in model workspace
 
-out = sim(model_name,[],options);
+out = sim(model_name,[],options); % Execute simulation
 disp("SIM COMPLETE");
 
+
+%% Read and Visualize data
 state_values = out.logsout{2}.Values;
 t_vect = state_values.control_vect.Time;
 control_vect = state_values.control_vect.Data;
@@ -96,6 +94,8 @@ ang_vel_body = state_values.ang_vel_body.Data;
 ang_accel_body = state_values.ang_accel_body.Data;
 al_be = state_values.al_be.Data;
 
+
+% Plots
 figure(1) % Position
 ax1 = tight_subplot(3,1,[.08 .05],[.05 .08],[.05 .03]);
 plot(ax1(1),t_vect, position(:,1)); title(ax1(1),'x [m]');
