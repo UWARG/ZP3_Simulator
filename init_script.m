@@ -42,7 +42,6 @@ TAS_init = 150; % Initial velocity [m/s]
 % Trim
 roll_init = 0;
 maxThrust = 16000; %[N]
-% [alss,thrustss,dess] = getTrim(TAS_init, m, cg, cg_ref, b, c, s, rho, roll_init, maxThrust, al_vec, cd_vec, cl_vec, cm_vec);
 [alss,thrustss,dess] = getTrim(TAS_init, m, cg, cg_ref, c, rho, roll_init, maxThrust);
 
 dE_ss     = dess; %0.001; % steady state elevator deflection [rad]
@@ -62,11 +61,12 @@ automatic_control_enable = 0; % Enable automatic control system (PM,AM)
 
 % Manual control
 cVect  = [0 1 1+dt 8 8+dt simulation_time]; % scheduling vector
-daVect = [0 0 0 0 0 0];
-deVect = [0 0 -0.02 -0.02 0 0]+dess;
-drVect = [0 0 0 0 0 0];
-ThVect = [0 0 0 0 0 0];
+daVect = [0 0 0.01 0.01 0 0]; %[rad]
+deVect = [0 0 0 0 0 0]+dess; %[rad]
+drVect = [0 0 0 0 0 0]; %[rad]
+ThVect = [0 0 0 0 0 0]; %[N]
 
+%% Run simulation
 save("sim_config.mat"); % save configuration parameters for repeated tests
 
 state_bus = createBus(); % Create state variable bus object
@@ -120,82 +120,6 @@ plot(ax4(1),t_vect, control_vect(:,1)); title(ax4(1),'da [rad]');
 plot(ax4(2),t_vect, control_vect(:,2)); title(ax4(2),'de [rad]');
 plot(ax4(3),t_vect, control_vect(:,3)); title(ax4(3),'dr [rad]');
 plot(ax4(4),t_vect, control_vect(:,4)); title(ax4(4),'thrust [N]');
-
-% C172
-% function [alss,thrustss,dess] = getTrim(Vt,mass,cg,cgRef, b, c, s, rho,phi,maxThrust, al_vec, cd_vec, cl_vec, cm_vec)
-%     psi = 0; be = 0; %assumed
-%     dU = []; dV = []; dW = [];
-%     thrustss = []; dess = [];
-% 
-%     da = []; M =[]; dz = [];
-% 
-%     options = optimset('TolX',1e-6);
-%     [alss,dz] = fminbnd(@findAOA,deg2rad(-1),deg2rad(14),options);
-% 
-%     da = [];
-%     
-%     function dz = findAOA(al) 
-%         theta   = al;
-% 
-%         [thrustss,da]  = fminbnd(@findThrust, 0, maxThrust, options);
-%         dz      = sqrt(dW^2);                   % minimum vertical motion - todo:convert to ground first
-%         
-%         function da = findThrust(thrust)
-%             [dess,M] = fminbnd(@findDeflection,deg2rad(-15),deg2rad(10),options); 
-%             da   = sqrt(dU^2 + dV^2 + dW^2);	% minimum acceleration  
-% 
-%             function M = findDeflection(de)
-%                 % Assumes zero da,dr,beta,p,q,r
-%                 qd      = 0.5*rho*Vt^2;
-%                 
-%                 % Drag
-%                 CD = interp1(al_vec,cd_vec,al);
-%                 
-%                 % Lift
-%                 CL = interp1(al_vec,cl_vec,al);
-%                 
-%                 % Pitch moment
-%                 cm0 = 0.07;
-%                 cmde = -1.28;
-%                 cmal = -0.9;
-%                 %CM = interp1(al_vec,cm_vec,al) + cmde*de;
-%                 
-%                 CM = cm0+cmal*al+cmde*de;
-%                 
-%                 %% Wind to body transformation
-%                 CX0 = CL*sin(al)- CD*cos(al)*cos(be);
-%                 CY0 = -CD*sin(be);
-%                 CZ0 = (-CL*cos(al) - CD*cos(be)*sin(al));
-%                 
-%                 Cl0 = -CM*cos(al)*sin(be);
-%                 Cm0 =         CM*cos(be);
-%                 Cn0 = -CM*sin(al)*sin(be);
-% 
-%                 
-%                 TbE =   [1 0 0; 0 cos(phi) sin(phi); 0 -sin(phi) cos(phi);]*...
-%                         [cos(theta) 0 -sin(theta); 0 1 0; sin(theta) 0 cos(theta);]*...
-%                         [cos(psi) sin(psi) 0; -sin(psi) cos(psi) 0; 0 0 1;];
-%                 Fg      = TbE*[0;0;mass*9.80665]; 	
-% 
-%                 Fa      = 0.5*[CX0;...
-%                            CY0;...
-%                            CZ0]*qd*s;
-% 
-%                 X       =  	thrust + Fa(1) + Fg(1);
-%                 Y       =  	Fa(2) + Fg(2);
-%                 Z       =  	Fa(3) + Fg(3);
-% 
-%                 dUVW    = 	[X;Y;Z]/mass; 
-%                 dU      =  	dUVW(1);
-%                 dV      =  	dUVW(2);
-%                 dW      =  	dUVW(3);
-%             
-%                 %CM
-%                 M = sqrt( (0.5*Cm0*qd*s*c + (cgRef-cg)*c*Fa(3))^2 );
-%             end
-%         end
-%     end
-% end
 
 %L39
 function [alss,thrustss,dess] = getTrim(Vt,mass,cg,cgRef, c, rho,phi,maxThrust)
